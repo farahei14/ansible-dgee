@@ -1,0 +1,27 @@
+---
+
+- name: install libselinux for python
+  yum: name=libselinux-python state=latest
+
+- name: install ntp package
+  yum: name=ntp state=latest
+  notify: restart ntpd
+
+- name: install vim-enhanced
+  yum: name=vim-enhanced state=latest
+
+- name: install man
+  yum: name=man state=latest
+
+- name: install bind-utils
+  yum: name=bind-utils state=latest
+
+- name: install yum-utils
+  yum: name=yum-utils state=latest
+
+- name: copy autlogout.sh in /etc/profile.d
+  copy: src={{ item }} dest=/etc/profile.d owner=root mode=0644
+  with_items:
+    - autologout.sh
+    - history_date.sh
+
