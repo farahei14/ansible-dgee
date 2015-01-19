@@ -2,3 +2,6 @@
 
 - name: restart ntpd
   service: name=ntpd enabled=yes state=restarted
+
+- name: enable ntpdate
+  service: name=ntpdate enabled=yes
