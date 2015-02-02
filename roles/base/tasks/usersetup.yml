@@ -1,0 +1,3 @@
+- name: create user account
+  user: name={{ item.key }} shell={{ item.value.shell }} state={{ item.value.state }}
+  with_dict: liste_users

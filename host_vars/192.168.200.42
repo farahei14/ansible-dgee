@@ -1,0 +1,6 @@
+---
+
+liste_users:
+  jho:
+    shell: /bin/bash
+    state: present

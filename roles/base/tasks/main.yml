@@ -36,3 +36,19 @@
 - name: check that ntpdate is enable
   service: name=ntpdate enabled=yes
 
+- name: check if root password is set
+  stat: path=/root/.passwordset
+  register: rootpasswdset
+
+- name: change default root password
+  user: name=root password={{ password_root }}
+  when: rootpasswdset.stat.exists == false
+  register: passwdset
+  tags: root_password
+
+- name: create flag for password set
+  file: path=/root/.passwordset
+
+- name: create user
+  include: usersetup.yml
+  tags: create_user

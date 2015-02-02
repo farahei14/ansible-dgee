@@ -2,3 +2,6 @@
 
 [dev]
 192.168.200.42
+
+[all:children]
+dev
