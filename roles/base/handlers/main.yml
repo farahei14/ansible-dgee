@@ -5,3 +5,9 @@
 
 - name: enable ntpdate
   service: name=ntpdate enabled=yes
+
+- name: restart sshd
+  service: name=sshd state=restarted
+
+- name: restart fail2ban
+  service: name=fail2ban state=restarted

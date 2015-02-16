@@ -1,8 +1,23 @@
 ---
+# installation epel pour fail2ban
+- name: install epel gpg key
+  rpm_key: "key={{ item }} state=present"
+  with_items:
+    - "http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6"
 
+- name: install epel repository
+  command: "rpm -Uvh --force {{ item.href }} creates={{ item.creates }}"
+  with_items:
+    - {
+      href: "http://mirror.iprimus.com.au/epel/6/i386/epel-release-6-8.noarch.rpm",
+      creates: "/etc/yum.repos.d/epel.repo"
+    }
+
+# obligatoire pour selinux et ansible
 - name: install libselinux for python
   yum: name=libselinux-python state=latest
 
+# installation de paquets utiles
 - name: install ntp package
   yum: name=ntp state=latest
   notify: restart ntpd
@@ -23,32 +38,44 @@
 - name: install yum-utils
   yum: name=yum-utils state=latest
 
+- name: install fail2ban
+  yum: name=fail2ban state=latest
+  notify: restart fail2ban
+
 - name: copy some scripts in /etc/profile.d
   copy: src={{ item }} dest=/etc/profile.d owner=root mode=0644
   with_items:
     - autologout.sh
     - history_date.sh
 
-# verify that service is running in case someone stop it manually
 - name: check that ntp is running
   service: name=ntpd state=started
 
 - name: check that ntpdate is enable
   service: name=ntpdate enabled=yes
 
-- name: check if root password is set
-  stat: path=/root/.passwordset
-  register: rootpasswdset
-
+# security changes
 - name: change default root password
   user: name=root password={{ password_root }}
-  when: rootpasswdset.stat.exists == false
-  register: passwdset
-  tags: root_password
+  tags: init_root_password
 
-- name: create flag for password set
-  file: path=/root/.passwordset
+- name: create user sysdeploy
+  user: name=sysdeploy password={{ password_sysdeploy }}
+  tags: init_sysdeploy_password
 
-- name: create user
-  include: usersetup.yml
-  tags: create_user
+- name: disable root login on sshd
+  lineinfile: dest=/etc/ssh/sshd_config regexp='^PermitRootLogin' line="PermitRootLogin no" state=present
+  notify: restart sshd
+  tags: init_sshd
+
+- name: copy ssh public key on sysdeploy
+  authorized_key:
+    user=sysdeploy
+    key="{{ item }}"
+
+  with_file:
+    - jho_pubkey
+  tags: init_sshd
+
+
+

@@ -1,7 +1,6 @@
 ---
 - name: application de la configuration de base
-  hosts: dev
-  user: root
+  hosts: all
 
   roles:
     - base
