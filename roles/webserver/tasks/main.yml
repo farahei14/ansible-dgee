@@ -1,0 +1,35 @@
+---
+# tasks file for webserver
+- name: install apache webserver
+  yum: name=httpd state=latest
+  notify:
+    - restart httpd
+
+- name: copie configuration apache
+  template:
+    src: httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: configuration sites-available et sites-enabled
+  file: path=/etc/httpd/{{ item }} state=directory owner=root group=root mode=0755
+  with_items:
+    - sites-available
+    - sites-enabled
+
+- name: copie enable/disable sites scripts
+  copy: src={{ item }} dest={{ a2_script_directory }} owner=root group=root mode=0750
+  with_items:
+    - a2ensite
+    - a2dissite
+
+- name: install php
+  yum: name=php-5.3.3-38.el6.x86_64 state=present
+
+- name: install phpMyAdmin
+  yum: name=phpMyAdmin state=latest
+  when: install_phpmyadmin
+
+

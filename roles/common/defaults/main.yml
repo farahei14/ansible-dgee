@@ -1,0 +1,5 @@
+# default variables for common
+name_sysdeploy: sysdeploy
+password_root: $6$saltsalt$npki8/hTdvNUyLqsIUs/a2HXEC2Bkx4eIikWjhu3a8XNpSFc6iqZv9op1ijf0EPZm0bqA6hoh.R1ORrIN3d5T0
+password_sysdeploy: $6$saltsalt$AU6JNKwu7rhHG9Bdcp9bIqdSp7I2.3xLceYmurdwVQgR.vZv0IsTOEqJAqK0WGVQsOxGzb3E1BgkOi8ep496f0
+disable_rootlogin: no

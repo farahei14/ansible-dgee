@@ -2,5 +2,13 @@
 - name: application de la configuration de base
   hosts: all
 
+  vars:
+    - admin_email: admin@education.pf
+    - install_phpmyadmin: yes
+    - name_sysdeploy: sysadmin
+
   roles:
-    - base
+    - { role: common, tags: ['bootstrap'] }
+    - { role: webserver, tags: ['webserver'] }
+
+

@@ -1,0 +1,8 @@
+---
+# defaults file for webserver
+webserver_port: 80
+admin_email: root@localhost
+
+# which directory to copy a2ensite and a2dissite script
+a2_script_directory: /usr/bin
+install_phpmyadmin: no

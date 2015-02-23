@@ -10,4 +10,4 @@
   service: name=sshd state=restarted
 
 - name: restart fail2ban
-  service: name=fail2ban state=restarted
+  service: name=fail2ban state=restarted enabled=yes

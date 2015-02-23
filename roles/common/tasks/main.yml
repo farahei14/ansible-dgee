@@ -59,23 +59,38 @@
   user: name=root password={{ password_root }}
   tags: init_root_password
 
-- name: create user sysdeploy
-  user: name=sysdeploy password={{ password_sysdeploy }}
-  tags: init_sysdeploy_password
+- name: create user for sysadmin task
+  user: name={{ name_sysdeploy }} password={{ password_sysdeploy }}
+  tags: init_sysdeploy
+
+- name: copy ssh public key on user we just create
+  authorized_key:
+    user={{ name_sysdeploy }}
+    key="{{ lookup('file', item) }}"
+    state=present
+  with_fileglob:
+    - add_keys/*
+  tags:
+    - init_sysdeploy
+    - addkey_sysdeploy
+
+# task to remove key
+- name: remove ssh public key on sysdeploy
+  authorized_key:
+    user={{ name_sysdeploy }}
+    key="{{ lookup('file', item) }}"
+    state=absent
+  with_fileglob:
+    - remove_keys/*
+  tags: removekey_sysdeploy
 
 - name: disable root login on sshd
   lineinfile: dest=/etc/ssh/sshd_config regexp='^PermitRootLogin' line="PermitRootLogin no" state=present
+  when: disable_rootlogin
   notify: restart sshd
-  tags: init_sshd
 
-- name: copy ssh public key on sysdeploy
-  authorized_key:
-    user=sysdeploy
-    key="{{ item }}"
 
-  with_file:
-    - jho_pubkey
-  tags: init_sshd
+
 
 
 

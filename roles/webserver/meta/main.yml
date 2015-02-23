@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: James HORLEY
+  description: Apache installation with php and phpMyAdmin
+
+  license: license GPLv2
+  min_ansible_version: 1.2
+
+  platforms:
+  - name: CentOS
+    versions:
+    - 6
+
+  categories:
+  - system
+  - web
+dependencies: []
+
